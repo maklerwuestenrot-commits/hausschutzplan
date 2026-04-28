@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2C3E50">
+<title>Hausschutzplan-Rechner</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --anthrazit: #2C3E50;
+  --anthrazit-2: #34495E;
+  --gold: #B8956A;
+  --gold-hell: #D4B88A;
+  --off-white: #FAFAFA;
+  --border: #CCCCCC;
+  --text: #2C3E50;
+  --muted: #7F8C8D;
+  --input-bg: #FEF9E7;
+  --result-bg: #F0EDE5;
+  --highlight: #EDE0CC;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f5f5;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.header {
+  background: var(--anthrazit);
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+  position: relative;
+}
+.header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.header .subtitle {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-top: 6px;
+}
+.gold-line {
+  height: 4px;
+  background: var(--gold);
+}
+
+.section-title {
+  background: var(--anthrazit-2);
+  color: white;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 16px;
+}
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 12px;
+  }
+}
+
+.posten-list {
+  background: var(--off-white);
+  padding: 8px 16px;
+}
+
+.posten {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.posten:last-child { border-bottom: none; }
+
+.posten-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.posten-row {
+  display: grid;
+  grid-template-columns: 1.2fr auto 1.5fr;
+  gap: 10px;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  .posten-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+  }
+  .posten-row > div:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+.posten-info { font-size: 12px; color: var(--muted); }
+.posten-info .label { display: block; font-weight: 600; }
+.posten-info .value { display: block; font-size: 13px; color: var(--text); }
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkbox-wrapper input[type=checkbox] {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  accent-color: var(--gold);
+}
+
+input[type=text], input[type=number], input[type=tel], input[type=email] {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  font-size: 16px;
+  font-family: inherit;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
+
+.input-eigene { font-size: 14px; padding: 8px; }
+
+.bedarf-summary {
+  background: var(--anthrazit);
+  color: white;
+  padding: 18px 16px;
+  margin: 16px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bedarf-summary .label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.bedarf-summary .value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.tranche-input-group {
+  background: var(--highlight);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.tranche-input-group label {
+  font-weight: 700;
+  font-size: 14px;
+}
+.tranche-input-group input {
+  width: 130px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.etappen-info {
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+.etappen-info strong { color: var(--gold); font-size: 16px; }
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--anthrazit);
+}
+.variant-header {
+  background: var(--anthrazit);
+  color: white;
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.variant-body {
+  background: var(--off-white);
+  padding: 16px 12px;
+  border-right: 1px solid var(--border);
+}
+.variant-body:last-child { border-right: none; }
+
+.variant-row {
+  margin-bottom: 12px;
+}
+.variant-row .lbl {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.variant-row .val {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.variant-row.hauptergebnis .val {
+  font-size: 22px;
+  color: var(--gold);
+  background: var(--result-bg);
+  padding: 10px;
+  margin: 4px -4px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.kundenwunsch-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 16px;
+  background: var(--highlight);
+}
+.kundenwunsch-block button {
+  padding: 14px;
+  border: 2px solid transparent;
+  background: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+  color: var(--text);
+  transition: all 0.2s;
+}
+.kundenwunsch-block button.selected {
+  background: var(--gold);
+  color: white;
+  border-color: var(--anthrazit);
+}
+
+.kunden-form {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: var(--off-white);
+}
+.kunden-form .field { display: flex; flex-direction: column; }
+.kunden-form .field.full { grid-column: 1 / -1; }
+.kunden-form label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.send-button {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 16px;
+  padding: 18px;
+  background: var(--gold);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(184, 149, 106, 0.3);
+}
+.send-button:hover { background: var(--gold-hell); }
+.send-button:active { transform: scale(0.98); }
+
+.vorlage-section {
+  background: var(--anthrazit-2);
+  color: white;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 16px;
+}
+.vorlage-text {
+  background: var(--result-bg);
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  user-select: all;
+  -webkit-user-select: all;
+}
+.copy-button {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 12px 16px;
+  padding: 14px;
+  background: var(--anthrazit-2);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.copy-button.copied { background: #27ae60; }
+
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 3px solid var(--gold);
+  margin-top: 16px;
+}
+
+.reset-button {
+  background: none;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-family: inherit;
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 22px; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .variant-body { border-right: none; border-bottom: 1px solid var(--border); }
+  .kunden-form { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+  <h1>HAUSSCHUTZPLAN</h1>
+  <div class="subtitle">MODERNISIERUNGS-VORSORGE</div>
+</div>
+<div class="gold-line"></div>
+
+<div class="section-title">①  MODERNISIERUNGSBEDARF</div>
+
+<div class="posten-list" id="postenList">
+  <!-- wird per JS gefüllt -->
+</div>
+
+<div class="bedarf-summary">
+  <div class="label">GESAMT-MODERNISIERUNGSBEDARF</div>
+  <div class="value" id="gesamtBedarf">0 €</div>
+</div>
+
+<div class="tranche-input-group">
+  <label for="tranche">Bedarf pro<br>Modernisierungs-Etappe</label>
+  <input type="number" id="tranche" value="20000" step="1000" min="5000">
+</div>
+
+<div class="etappen-info" id="etappenInfo"></div>
+
+<div class="section-title">②  FINANZIERUNG — VERGLEICH</div>
+
+<div class="compare-grid">
+  <div class="variant-header">VARIANTE A<br>Monatlich sparen</div>
+  <div class="variant-header">VARIANTE B<br>Einmalanlage</div>
+</div>
+
+<div class="compare-grid">
+  <div class="variant-body">
+    <div class="variant-row">
+      <div class="lbl">Bausparsumme</div>
+      <div class="val" id="bssSparen">0 €</div>
+    </div>
+    <div class="variant-row hauptergebnis">
+      <div class="lbl">Monatlicher Sparbeitrag</div>
+      <div class="val" id="sparrate">0 €</div>
+    </div>
+    <div class="variant-row">
+      <div class="lbl">Anzahl Etappen</div>
+      <div class="val" id="anzSparen">0</div>
+    </div>
+    <div class="variant-row">
+      <div class="lbl">Auszahlung pro Etappe</div>
+      <div class="val" id="auszSparen">0 €</div>
+    </div>
+  </div>
+  <div class="variant-body">
+    <div class="variant-row">
+      <div class="lbl">Bausparsumme</div>
+      <div class="val" id="bssEinmal">0 €</div>
+    </div>
+    <div class="variant-row hauptergebnis">
+      <div class="lbl">Einmaleinzahlung</div>
+      <div class="val" id="einmalanlage">0 €</div>
+    </div>
+    <div class="variant-row">
+      <div class="lbl">Anzahl Etappen</div>
+      <div class="val" id="anzEinmal">0</div>
+    </div>
+    <div class="variant-row">
+      <div class="lbl">Auszahlung pro Etappe</div>
+      <div class="val" id="auszEinmal">0 €</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">KUNDENWUNSCH</div>
+<div class="kundenwunsch-block">
+  <button id="btnSparen" data-wunsch="Sparen">💰 Sparen</button>
+  <button id="btnEinmal" data-wunsch="Einmal">💼 Einmalanlage</button>
+</div>
+
+<div class="section-title">③  KUNDENDATEN</div>
+<div class="kunden-form">
+  <div class="field full">
+    <label>Vor- und Nachname</label>
+    <input type="text" id="kdName" autocomplete="name">
+  </div>
+  <div class="field">
+    <label>Geburtsdatum</label>
+    <input type="text" id="kdGeb" placeholder="TT.MM.JJJJ">
+  </div>
+  <div class="field">
+    <label>Telefon / Mobil</label>
+    <input type="tel" id="kdTel" autocomplete="tel" inputmode="tel">
+  </div>
+  <div class="field full">
+    <label>Straße + Hausnummer</label>
+    <input type="text" id="kdStr" autocomplete="street-address">
+  </div>
+  <div class="field">
+    <label>PLZ + Ort</label>
+    <input type="text" id="kdPlz" autocomplete="postal-code">
+  </div>
+  <div class="field">
+    <label>E-Mail</label>
+    <input type="email" id="kdEmail" autocomplete="email" inputmode="email">
+  </div>
+  <div class="field">
+    <label>IBAN</label>
+    <input type="text" id="kdIban" placeholder="DE...">
+  </div>
+  <div class="field">
+    <label>Personalausweis-Nr.</label>
+    <input type="text" id="kdPerso">
+  </div>
+  <div class="field full">
+    <label>Berater (Ihr Name)</label>
+    <input type="text" id="berater">
+  </div>
+</div>
+
+<div class="section-title">④  DATEN SENDEN</div>
+
+<a href="#" id="sendBtn" class="send-button" target="_blank" rel="noopener">📱  Daten an Udo senden</a>
+
+<div class="vorlage-section">VORLAGE für den Kunden — Perso + IBAN anfordern</div>
+<div class="vorlage-text" id="vorlageText">Hallo, vielen Dank für unsere Modernisierungs-Beratung. Für den nächsten Schritt benötige ich bitte noch:
+
+1. Personalausweis (Vorder- und Rückseite)
+2. IBAN-Bestätigung (Kontoauszug oder EC-Karte)
+
+Einfach als Foto zurückschicken. Vielen Dank!</div>
+<button class="copy-button" id="copyBtn">📋  Vorlage-Text kopieren</button>
+
+<div class="footer">
+  Wüstenrot Bausparkasse AG  —  Beispielrechnung, kein verbindliches Angebot
+  <br>
+  <button class="reset-button" id="resetBtn">Alle Felder leeren</button>
+</div>
+
+</div>
+
+<script>
+const POSTEN = [
+  { id: 'heizung', name: 'Heizung', detail: 'Wärmepumpe inkl. Heizkörpertausch', pauschal: 45000 },
+  { id: 'fenster', name: 'Fenster / Türen', detail: 'Fensteraustausch', pauschal: 23000 },
+  { id: 'dach', name: 'Dach / Fassade', detail: 'Dachsanierung inkl. Dämmung', pauschal: 60000 },
+  { id: 'sanitaer', name: 'Sanitär / Bad', detail: 'Neues Bad', pauschal: 20000 },
+  { id: 'pv', name: 'Energie / PV', detail: 'Photovoltaik 9 kWp', pauschal: 15000 }
+];
+
+const UDO_NUMMER = '4917670157747';
+
+function fmt(n) {
+  if (!n || isNaN(n)) return '0 €';
+  return new Intl.NumberFormat('de-DE').format(Math.round(n)) + ' €';
+}
+
+function renderPosten() {
+  const list = document.getElementById('postenList');
+  list.innerHTML = POSTEN.map(p => `
+    <div class="posten">
+      <div class="posten-name">${p.name}<br><span style="font-weight:400;font-size:12px;color:var(--muted)">${p.detail}</span></div>
+      <div class="posten-row">
+        <div class="posten-info">
+          <span class="label">Pauschalwert</span>
+          <span class="value">${fmt(p.pauschal)}</span>
+        </div>
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="cb_${p.id}" data-pauschal="${p.pauschal}" data-id="${p.id}">
+        </div>
+        <div>
+          <input type="number" class="input-eigene" id="eig_${p.id}" placeholder="Eigene Schätzung €">
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getEndwert(p) {
+  const cb = document.getElementById('cb_' + p.id);
+  if (!cb.checked) return 0;
+  const eigene = parseFloat(document.getElementById('eig_' + p.id).value);
+  if (eigene && eigene > 0) return eigene;
+  return p.pauschal;
+}
+
+function rechne() {
+  // Gesamt-Bedarf
+  const bedarf = POSTEN.reduce((sum, p) => sum + getEndwert(p), 0);
+  document.getElementById('gesamtBedarf').textContent = fmt(bedarf);
+  
+  // Tranche
+  const tranche = parseFloat(document.getElementById('tranche').value) || 0;
+  
+  // Anzahl Etappen
+  const anzahl = (tranche > 0 && bedarf > 0) ? Math.ceil(bedarf / tranche) : 0;
+  document.getElementById('etappenInfo').innerHTML = anzahl > 0 
+    ? `Daraus ergibt sich: <strong>${anzahl} Etappen á ${fmt(tranche)}</strong>`
+    : '';
+  
+  // Variante A: Sparen
+  const bssSparen = bedarf;
+  const sparrate = Math.round(bssSparen * 0.00333 / 10) * 10;
+  document.getElementById('bssSparen').textContent = fmt(bssSparen);
+  document.getElementById('sparrate').textContent = fmt(sparrate) + ' mtl.';
+  document.getElementById('anzSparen').textContent = anzahl + ' Stück';
+  document.getElementById('auszSparen').textContent = fmt(tranche);
+  
+  // Variante B: Einmal
+  const bssEinmal = bedarf * 2;
+  const einmal = Math.round(bssEinmal * 0.12 / 100) * 100;
+  document.getElementById('bssEinmal').textContent = fmt(bssEinmal);
+  document.getElementById('einmalanlage').textContent = fmt(einmal) + ' einmalig';
+  document.getElementById('anzEinmal').textContent = anzahl + ' Stück';
+  document.getElementById('auszEinmal').textContent = fmt(tranche);
+  
+  updateSendBtn();
+  saveState();
+}
+
+function getWunsch() {
+  const sel = document.querySelector('.kundenwunsch-block button.selected');
+  return sel ? sel.dataset.wunsch : '';
+}
+
+function updateSendBtn() {
+  const bedarf = POSTEN.reduce((sum, p) => sum + getEndwert(p), 0);
+  const tranche = parseFloat(document.getElementById('tranche').value) || 0;
+  const bssSparen = bedarf;
+  const sparrate = Math.round(bssSparen * 0.00333 / 10) * 10;
+  const bssEinmal = bedarf * 2;
+  const einmal = Math.round(bssEinmal * 0.12 / 100) * 100;
+  
+  const params = [
+    'Hausschutz-Lead',
+    document.getElementById('kdName').value,
+    'Tel ' + document.getElementById('kdTel').value,
+    'Wunsch ' + getWunsch(),
+    'Bedarf ' + bedarf,
+    'Tranche ' + tranche,
+    'Sparen BSS ' + bssSparen + ' Rate ' + sparrate,
+    'Einmal BSS ' + bssEinmal + ' Anlage ' + einmal,
+    'Adresse ' + document.getElementById('kdStr').value + ' ' + document.getElementById('kdPlz').value,
+    'Email ' + document.getElementById('kdEmail').value,
+    'Geb ' + document.getElementById('kdGeb').value,
+    'IBAN ' + document.getElementById('kdIban').value,
+    'Perso ' + document.getElementById('kdPerso').value,
+    'Berater ' + document.getElementById('berater').value
+  ].filter(p => p && p.trim() !== '' && !p.endsWith(' ')).join(' | ');
+  
+  const url = 'https://wa.me/' + UDO_NUMMER + '?text=' + encodeURIComponent(params);
+  document.getElementById('sendBtn').href = url;
+}
+
+function saveState() {
+  const state = {
+    checked: {},
+    eigene: {},
+    tranche: document.getElementById('tranche').value,
+    wunsch: getWunsch(),
+    kunde: {
+      name: document.getElementById('kdName').value,
+      geb: document.getElementById('kdGeb').value,
+      tel: document.getElementById('kdTel').value,
+      str: document.getElementById('kdStr').value,
+      plz: document.getElementById('kdPlz').value,
+      email: document.getElementById('kdEmail').value,
+      iban: document.getElementById('kdIban').value,
+      perso: document.getElementById('kdPerso').value,
+      berater: document.getElementById('berater').value
+    }
+  };
+  POSTEN.forEach(p => {
+    state.checked[p.id] = document.getElementById('cb_' + p.id).checked;
+    state.eigene[p.id] = document.getElementById('eig_' + p.id).value;
+  });
+  try {
+    localStorage.setItem('hausschutz', JSON.stringify(state));
+  } catch(e) { /* localStorage nicht verfügbar */ }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('hausschutz');
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    if (state.tranche) document.getElementById('tranche').value = state.tranche;
+    POSTEN.forEach(p => {
+      if (state.checked && state.checked[p.id]) document.getElementById('cb_' + p.id).checked = true;
+      if (state.eigene && state.eigene[p.id]) document.getElementById('eig_' + p.id).value = state.eigene[p.id];
+    });
+    if (state.wunsch) {
+      const btn = document.querySelector(`.kundenwunsch-block button[data-wunsch="${state.wunsch}"]`);
+      if (btn) btn.classList.add('selected');
+    }
+    if (state.kunde) {
+      const k = state.kunde;
+      if (k.name) document.getElementById('kdName').value = k.name;
+      if (k.geb) document.getElementById('kdGeb').value = k.geb;
+      if (k.tel) document.getElementById('kdTel').value = k.tel;
+      if (k.str) document.getElementById('kdStr').value = k.str;
+      if (k.plz) document.getElementById('kdPlz').value = k.plz;
+      if (k.email) document.getElementById('kdEmail').value = k.email;
+      if (k.iban) document.getElementById('kdIban').value = k.iban;
+      if (k.perso) document.getElementById('kdPerso').value = k.perso;
+      if (k.berater) document.getElementById('berater').value = k.berater;
+    }
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderPosten();
+  loadState();
+  rechne();
+  
+  // Alle Inputs bei Änderung neu rechnen
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', rechne);
+    inp.addEventListener('change', rechne);
+  });
+  
+  // Wunsch-Buttons
+  document.querySelectorAll('.kundenwunsch-block button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.kundenwunsch-block button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      rechne();
+    });
+  });
+  
+  // Vorlage kopieren
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const txt = document.getElementById('vorlageText').textContent;
+    try {
+      await navigator.clipboard.writeText(txt);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓  Kopiert!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋  Vorlage-Text kopieren';
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch(e) {
+      // Fallback: Text markieren
+      const range = document.createRange();
+      range.selectNode(document.getElementById('vorlageText'));
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      alert('Text ist markiert. Bitte mit "Kopieren" oder Strg+C kopieren.');
+    }
+  });
+  
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Wirklich alle Eingaben löschen?')) return;
+    try { localStorage.removeItem('hausschutz'); } catch(e) {}
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('input[type=text], input[type=number], input[type=tel], input[type=email]').forEach(inp => {
+      if (inp.id === 'tranche') { inp.value = '20000'; }
+      else { inp.value = ''; }
+    });
+    document.querySelectorAll('.kundenwunsch-block button').forEach(b => b.classList.remove('selected'));
+    rechne();
+  });
+});
+</script>
+</body>
+</html>
