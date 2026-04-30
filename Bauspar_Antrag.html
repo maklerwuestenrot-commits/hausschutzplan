@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2C3E50">
+<title>Bauspar-Antrag</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --anthrazit: #2C3E50;
+  --anthrazit-2: #34495E;
+  --gold: #B8956A;
+  --gold-hell: #D4B88A;
+  --gold-dark: #8B6F4E;
+  --off-white: #FAFAFA;
+  --border: #CCCCCC;
+  --text: #2C3E50;
+  --muted: #7F8C8D;
+  --input-bg: #FEF9E7;
+  --result-bg: #F0EDE5;
+  --highlight: #EDE0CC;
+  --success: #27AE60;
+  --warning: #E67E22;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f5f5;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.header {
+  background: var(--anthrazit);
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+  position: relative;
+}
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.header .subtitle {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--gold);
+}
+
+.section {
+  padding: 18px 16px;
+  border-bottom: 1px solid #ECECEC;
+}
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--gold-hell);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--anthrazit);
+  margin-bottom: 5px;
+}
+.field label .req {
+  color: #C0392B;
+  margin-left: 3px;
+}
+.field input[type=text],
+.field input[type=tel],
+.field input[type=number],
+.field input[type=date],
+.field input[type=email] {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  font-size: 16px;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.field input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: white;
+}
+.field .hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.amount-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: end;
+}
+.amount-row .field { margin-bottom: 0; }
+
+.amount-with-toggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: stretch;
+}
+.toggle-group {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+}
+.toggle-btn {
+  background: white;
+  border: none;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+  min-width: 56px;
+}
+.toggle-btn:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.toggle-btn.active {
+  background: var(--gold);
+  color: white;
+}
+.toggle-btn:hover:not(.active) {
+  background: var(--off-white);
+  color: var(--anthrazit);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--off-white);
+  border-radius: 6px;
+  border: 1px solid #E0E0E0;
+  margin-bottom: 8px;
+}
+.checkbox-row input[type=checkbox] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.checkbox-row label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  margin: 0;
+}
+
+.btn-group {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--off-white);
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: white;
+  box-shadow: 0 3px 10px rgba(184,149,106,0.35);
+}
+.btn-primary:hover { background: var(--gold-dark); }
+
+.btn-secondary {
+  background: var(--anthrazit);
+  color: white;
+  box-shadow: 0 3px 10px rgba(44,62,80,0.25);
+}
+.btn-secondary:hover { background: var(--anthrazit-2); }
+
+.btn-tertiary {
+  background: white;
+  color: var(--anthrazit);
+  border: 1.5px solid var(--border);
+}
+
+.info-box {
+  background: var(--highlight);
+  border-left: 3px solid var(--gold);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.info-box strong {
+  color: var(--gold-dark);
+}
+
+.footer {
+  text-align: center;
+  padding: 18px 16px;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--off-white);
+}
+
+/* Modal für Kunden-Vorlage */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  padding: 20px;
+  overflow-y: auto;
+}
+.modal-bg.active { display: flex; align-items: flex-start; justify-content: center; padding-top: 40px; }
+.modal {
+  background: white;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.modal-header {
+  background: var(--anthrazit);
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.modal-body {
+  padding: 20px;
+}
+.template-text {
+  background: var(--input-bg);
+  border: 1.5px solid var(--gold-hell);
+  border-radius: 6px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+  font-family: inherit;
+  width: 100%;
+  min-height: 200px;
+  resize: vertical;
+}
+.copy-btn {
+  background: var(--gold);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.copy-btn.copied { background: var(--success); }
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 20px; }
+  .row-2 { grid-template-columns: 1fr; }
+  .amount-row { grid-template-columns: 1fr; }
+  .toggle-btn { padding: 0 10px; min-width: 48px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>BAUSPAR-ANTRAG</h1>
+  <div class="subtitle">Wüstenrot · Antragsdaten</div>
+</div>
+
+<!-- KUNDENDATEN -->
+<div class="section">
+  <div class="section-title">Kundendaten</div>
+  <div class="row-2">
+    <div class="field">
+      <label>Vorname<span class="req">*</span></label>
+      <input type="text" id="vorname" autocomplete="given-name">
+    </div>
+    <div class="field">
+      <label>Nachname<span class="req">*</span></label>
+      <input type="text" id="nachname" autocomplete="family-name">
+    </div>
+  </div>
+  <div class="field">
+    <label>Handynummer Kunde<span class="req">*</span></label>
+    <input type="tel" id="handy" placeholder="z.B. 0176 1234567" autocomplete="tel">
+  </div>
+</div>
+
+<!-- BAUSPAR-ECKDATEN -->
+<div class="section">
+  <div class="section-title">Bausparvertrag</div>
+  <div class="field">
+    <label>Bausparsumme (€)<span class="req">*</span></label>
+    <input type="number" id="bausparsumme" placeholder="z.B. 50000" inputmode="numeric">
+  </div>
+
+  <div class="field">
+    <label>Monatliche Sparrate (€)</label>
+    <div class="amount-with-toggle">
+      <input type="number" id="sparrate" placeholder="z.B. 250" inputmode="numeric">
+      <div class="toggle-group" data-target="sparrate_typ">
+        <button type="button" class="toggle-btn" data-val="VWL">VWL</button>
+        <button type="button" class="toggle-btn" data-val="SEPA">SEPA</button>
+      </div>
+      <input type="hidden" id="sparrate_typ" value="">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Einmalbeitrag (€)</label>
+    <div class="amount-with-toggle">
+      <input type="number" id="einmalbeitrag" placeholder="z.B. 5000" inputmode="numeric">
+      <div class="toggle-group" data-target="einmal_typ">
+        <button type="button" class="toggle-btn" data-val="VWL">VWL</button>
+        <button type="button" class="toggle-btn" data-val="SEPA">SEPA</button>
+      </div>
+      <input type="hidden" id="einmal_typ" value="">
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:12px">
+    <label>IBAN</label>
+    <input type="text" id="iban" placeholder="DE00 0000 0000 0000 0000 00">
+    <div class="hint">Falls noch nicht vorhanden → Button "Vorlage an Kunden senden" unten</div>
+  </div>
+</div>
+
+<!-- UNTERLAGEN -->
+<div class="section">
+  <div class="section-title">Unterlagen</div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="perso_ok">
+    <label for="perso_ok">Personalausweiskopie liegt vor</label>
+  </div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="iban_ok">
+    <label for="iban_ok">IBAN liegt vor</label>
+  </div>
+  <div class="info-box" style="margin-top:10px">
+    <strong>Fehlt etwas?</strong> Mit dem Button <em>"Vorlage an Kunden senden"</em> bekommst du einen fertigen Text — der Kunde sendet Perso & IBAN dann <strong>direkt an Udo</strong>, nicht an dich.
+  </div>
+</div>
+
+<!-- BERATER -->
+<div class="section">
+  <div class="section-title">Vertriebspartner</div>
+  <div class="field">
+    <label>Dein Name<span class="req">*</span></label>
+    <input type="text" id="berater" placeholder="z.B. Klaus Mustermann">
+  </div>
+  <div class="field">
+    <label>Notizen / Bemerkung</label>
+    <input type="text" id="notiz" placeholder="z.B. ruft Mittwoch zurück">
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="btn-group">
+  <button class="btn btn-primary" id="sendUdoBtn">
+    📲 Daten an Udo senden (WhatsApp)
+  </button>
+  <button class="btn btn-secondary" id="sendKundeBtn">
+    📋 Vorlage an Kunden senden (Perso + IBAN)
+  </button>
+  <button class="btn btn-tertiary" id="resetBtn">
+    🔄 Formular zurücksetzen
+  </button>
+</div>
+
+<div class="footer">
+  Wüstenrot · Udo Bernhardt · Gebietsleiter Maklervertrieb<br>
+  Mobil: 0176 70157747
+</div>
+
+</div>
+
+<!-- MODAL für Kunden-Vorlage -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Vorlage zum Kopieren</h3>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-box" style="margin-bottom:14px">
+        Diesen Text dem Kunden per <strong>WhatsApp / SMS / E-Mail</strong> senden. Der Kunde kann die Telefonnummer direkt anklicken und sendet Perso + IBAN <strong>direkt an Udo</strong>.
+      </div>
+      <textarea class="template-text" id="templateText" readonly></textarea>
+      <button class="copy-btn" id="copyBtn">📋 Text kopieren</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MOBIL_UDO = '0176 70157747';
+const MOBIL_UDO_INTL = '4917670157747'; // ohne + für wa.me
+
+// Speichern in localStorage
+const FIELDS = ['vorname','nachname','handy','bausparsumme','sparrate','sparrate_typ','einmalbeitrag','einmal_typ','iban','berater','notiz'];
+const CHECKS = ['perso_ok','iban_ok'];
+
+function save() {
+  const data = {};
+  FIELDS.forEach(id => { data[id] = document.getElementById(id).value; });
+  CHECKS.forEach(id => { data[id] = document.getElementById(id).checked; });
+  try { localStorage.setItem('bauspar_antrag', JSON.stringify(data)); } catch(e) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('bauspar_antrag');
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    FIELDS.forEach(id => { if (data[id] !== undefined) document.getElementById(id).value = data[id]; });
+    CHECKS.forEach(id => { if (data[id] !== undefined) document.getElementById(id).checked = data[id]; });
+  } catch(e) {}
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+function num(id) {
+  const v = val(id);
+  if (!v) return '';
+  const n = parseFloat(v.replace(',','.'));
+  return isNaN(n) ? '' : n.toLocaleString('de-DE') + ' €';
+}
+
+function buildUdoMessage() {
+  const vorname = val('vorname');
+  const nachname = val('nachname');
+  const handy = val('handy');
+  const bss = num('bausparsumme');
+  const rate = num('sparrate');
+  const rateTyp = val('sparrate_typ');
+  const einmal = num('einmalbeitrag');
+  const einmalTyp = val('einmal_typ');
+  const iban = val('iban');
+  const berater = val('berater');
+  const notiz = val('notiz');
+  const persoOk = document.getElementById('perso_ok').checked;
+  const ibanOk = document.getElementById('iban_ok').checked;
+
+  const lines = [];
+  lines.push('🏠 *BAUSPAR-ANTRAG*');
+  lines.push('');
+
+  // Kunde
+  if (vorname || nachname) lines.push(`*Name:* ${vorname} ${nachname}`.trim());
+  if (handy) lines.push(`*Handy:* ${handy}`);
+
+  // Vertrag
+  if (bss) lines.push(`*Bausparsumme:* ${bss}`);
+  if (rate) {
+    const suffix = rateTyp ? ` (${rateTyp})` : '';
+    lines.push(`*Sparrate:* ${rate} / Monat${suffix}`);
+  }
+  if (einmal) {
+    const suffix = einmalTyp ? ` (${einmalTyp})` : '';
+    lines.push(`*Einmalbeitrag:* ${einmal}${suffix}`);
+  }
+  if (iban) lines.push(`*IBAN:* ${iban}`);
+
+  // Unterlagen
+  lines.push('');
+  lines.push(`*Personalausweis:* ${persoOk ? '✅ liegt vor' : '❌ fehlt'}`);
+  lines.push(`*IBAN:* ${ibanOk ? '✅ liegt vor' : '❌ fehlt'}`);
+
+  // Berater
+  if (berater) {
+    lines.push('');
+    lines.push(`*Vertriebspartner:* ${berater}`);
+  }
+  if (notiz) lines.push(`*Notiz:* ${notiz}`);
+
+  return lines.join('\n');
+}
+
+function buildKundenVorlage() {
+  const vorname = val('vorname');
+  const nachname = val('nachname');
+  const persoOk = document.getElementById('perso_ok').checked;
+  const ibanOk = document.getElementById('iban_ok').checked;
+
+  const fehlen = [];
+  if (!persoOk) fehlen.push('Personalausweis (Vorder- und Rückseite)');
+  if (!ibanOk) fehlen.push('IBAN für die Sparrate / SEPA-Lastschrift');
+
+  let anrede = (vorname || nachname) ? `Hallo ${vorname || nachname},` : 'Hallo,';
+
+  let txt = `${anrede}\n\n`;
+  txt += `vielen Dank für das Gespräch — für den Bausparantrag fehlen mir noch folgende Unterlagen:\n\n`;
+
+  if (fehlen.length === 0) {
+    txt += `• Personalausweis (Vorder- und Rückseite)\n`;
+    txt += `• IBAN\n\n`;
+  } else {
+    fehlen.forEach(f => { txt += `• ${f}\n`; });
+    txt += `\n`;
+  }
+
+  txt += `Bitte senden Sie mir die Unterlagen *direkt per WhatsApp* an:\n\n`;
+  txt += `📱 ${MOBIL_UDO}\n\n`;
+  txt += `Einfach auf die Nummer tippen und ein Foto vom Ausweis schicken — schneller geht's nicht.\n\n`;
+  txt += `Beste Grüße\n`;
+  txt += `Udo Bernhardt\n`;
+  txt += `Wüstenrot`;
+
+  return txt;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  load();
+
+  // Toggle-Buttons (VWL/SEPA) initialisieren — Status aus hidden input wiederherstellen
+  document.querySelectorAll('.toggle-group').forEach(group => {
+    const targetId = group.dataset.target;
+    const hiddenInput = document.getElementById(targetId);
+    const currentVal = hiddenInput.value;
+
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+      if (btn.dataset.val === currentVal) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        const wasActive = btn.classList.contains('active');
+        // alle in der Gruppe deaktivieren
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        if (!wasActive) {
+          btn.classList.add('active');
+          hiddenInput.value = btn.dataset.val;
+        } else {
+          hiddenInput.value = '';
+        }
+        save();
+      });
+    });
+  });
+
+  // Auto-save bei Änderungen
+  FIELDS.forEach(id => {
+    document.getElementById(id).addEventListener('input', save);
+  });
+  CHECKS.forEach(id => {
+    document.getElementById(id).addEventListener('change', save);
+  });
+
+  // Daten an Udo
+  document.getElementById('sendUdoBtn').addEventListener('click', () => {
+    if (!val('vorname') && !val('nachname')) {
+      alert('Bitte mindestens Vor- oder Nachname eintragen.');
+      return;
+    }
+    if (!val('bausparsumme')) {
+      alert('Bitte Bausparsumme eintragen.');
+      return;
+    }
+    const msg = buildUdoMessage();
+    const url = `https://wa.me/${MOBIL_UDO_INTL}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  });
+
+  // Vorlage an Kunden
+  document.getElementById('sendKundeBtn').addEventListener('click', () => {
+    const txt = buildKundenVorlage();
+    document.getElementById('templateText').value = txt;
+    document.getElementById('modal').classList.add('active');
+  });
+
+  // Modal schließen
+  document.getElementById('modalClose').addEventListener('click', () => {
+    document.getElementById('modal').classList.remove('active');
+  });
+  document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target.id === 'modal') {
+      document.getElementById('modal').classList.remove('active');
+    }
+  });
+
+  // Kopieren
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const ta = document.getElementById('templateText');
+    const btn = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.writeText(ta.value);
+      btn.textContent = '✅ Kopiert!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Text kopieren';
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch(e) {
+      ta.select();
+      document.execCommand('copy');
+      btn.textContent = '✅ Kopiert!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Text kopieren';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+  });
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Wirklich alle Eingaben löschen?')) return;
+    try { localStorage.removeItem('bauspar_antrag'); } catch(e) {}
+    FIELDS.forEach(id => { document.getElementById(id).value = ''; });
+    CHECKS.forEach(id => { document.getElementById(id).checked = false; });
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  });
+});
+</script>
+</body>
+</html>
