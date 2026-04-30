@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2C3E50">
+<title>Bausparvertrag-Abschluss</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --anthrazit: #2C3E50;
+  --anthrazit-2: #34495E;
+  --gold: #B8956A;
+  --gold-hell: #D4B88A;
+  --off-white: #FAFAFA;
+  --border: #CCCCCC;
+  --text: #2C3E50;
+  --muted: #7F8C8D;
+  --input-bg: #FEF9E7;
+  --result-bg: #F0EDE5;
+  --highlight: #EDE0CC;
+  --green: #27AE60;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f5f5;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.header {
+  background: var(--anthrazit);
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.header .subtitle {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-top: 6px;
+}
+.gold-line {
+  height: 4px;
+  background: var(--gold);
+}
+
+.section-title {
+  background: var(--anthrazit-2);
+  color: white;
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.form-section {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--off-white);
+}
+.form-section .field {
+  display: flex;
+  flex-direction: column;
+}
+.form-section .field.full {
+  grid-column: 1 / -1;
+}
+.form-section label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+input[type=text], input[type=number], input[type=tel], input[type=email], select, textarea {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  font-size: 16px;
+  font-family: inherit;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--gold);
+  border-color: var(--gold);
+}
+textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237F8C8D'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+.variant-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 16px;
+  background: var(--highlight);
+}
+.variant-toggle button {
+  padding: 14px;
+  border: 2px solid transparent;
+  background: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+  color: var(--text);
+}
+.variant-toggle button.selected {
+  background: var(--gold);
+  color: white;
+  border-color: var(--anthrazit);
+}
+
+.checklist {
+  padding: 16px;
+  background: var(--off-white);
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.check-item:last-child { border-bottom: none; }
+.check-item input[type=checkbox] {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  accent-color: var(--gold);
+  flex-shrink: 0;
+}
+.check-item label {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  cursor: pointer;
+}
+.check-item .hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 400;
+  display: block;
+}
+
+.termin-grid {
+  padding: 16px;
+  background: var(--off-white);
+}
+.termin-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.termin-row:last-child { border-bottom: none; }
+.termin-row .day-label {
+  font-weight: 700;
+  font-size: 14px;
+}
+.termin-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.termin-slots button {
+  padding: 8px 4px;
+  border: 1px solid var(--border);
+  background: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+  color: var(--text);
+}
+.termin-slots button.selected {
+  background: var(--gold);
+  color: white;
+  border-color: var(--anthrazit);
+}
+
+.uhrzeit-input {
+  padding: 16px;
+  background: var(--highlight);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.uhrzeit-input label {
+  font-weight: 700;
+  font-size: 14px;
+}
+.uhrzeit-input input {
+  width: 130px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.send-button {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 16px;
+  padding: 18px;
+  background: var(--green);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+.send-button:active { transform: scale(0.98); }
+
+.send-button.gold {
+  background: var(--gold);
+  box-shadow: 0 4px 12px rgba(184, 149, 106, 0.3);
+}
+
+.info-box {
+  background: var(--result-bg);
+  margin: 0 16px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--gold);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.info-box strong { color: var(--anthrazit); }
+
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 3px solid var(--gold);
+  margin-top: 24px;
+}
+
+.reset-button {
+  background: none;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-family: inherit;
+}
+
+@media (max-width: 480px) {
+  .form-section { grid-template-columns: 1fr; }
+  .header h1 { font-size: 19px; }
+  .termin-row { grid-template-columns: 1fr; gap: 4px; }
+  .termin-slots { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+  <h1>BAUSPARVERTRAG-ABSCHLUSS</h1>
+  <div class="subtitle">F I N A L I S I E R U N G</div>
+</div>
+<div class="gold-line"></div>
+
+<div class="info-box">
+  <strong>So geht's:</strong> Daten prüfen und ergänzen, fehlende Unterlagen ankreuzen, Wunschtermin für den Abschluss-Anruf wählen, dann <strong>"Daten an Udo senden"</strong> drücken — alle Infos kommen direkt zu mir.
+</div>
+
+<div class="section-title">①   B A U S P A R - D A T E N</div>
+<div class="form-section">
+  <div class="field">
+    <label>Bausparsumme (€)</label>
+    <input type="number" id="bss" placeholder="z.B. 60000" step="1000">
+  </div>
+  <div class="field">
+    <label>Beginn (Vertragsstart)</label>
+    <input type="text" id="beginn" placeholder="TT.MM.JJJJ" inputmode="numeric" maxlength="10">
+  </div>
+  <div class="field full">
+    <label>Variante</label>
+  </div>
+</div>
+<div class="variant-toggle">
+  <button id="btnSparen" data-wunsch="Sparen">💰 Monatlich Sparen</button>
+  <button id="btnEinmal" data-wunsch="Einmalanlage">💼 Einmalanlage</button>
+</div>
+<div class="form-section">
+  <div class="field" id="fieldSparrate">
+    <label>Monatliche Sparrate (€)</label>
+    <input type="number" id="sparrate" placeholder="z.B. 300">
+  </div>
+  <div class="field" id="fieldEinmal" style="display:none">
+    <label>Einmalanlage (€)</label>
+    <input type="number" id="einmalanlage" placeholder="z.B. 14400">
+  </div>
+  <div class="field">
+    <label>Sparrate-Faktor</label>
+    <input type="text" id="promille" placeholder="5 ‰" readonly style="background:#f0f0f0;color:var(--muted)">
+  </div>
+</div>
+
+<div class="section-title">②   K U N D E N D A T E N</div>
+<div class="form-section">
+  <div class="field full">
+    <label>Vor- und Nachname</label>
+    <input type="text" id="kdName" autocomplete="name">
+  </div>
+  <div class="field">
+    <label>Geburtsdatum</label>
+    <input type="text" id="kdGeb" placeholder="TT.MM.JJJJ" inputmode="numeric" maxlength="10">
+  </div>
+  <div class="field">
+    <label>Telefon / Mobil</label>
+    <input type="tel" id="kdTel" autocomplete="tel" inputmode="tel">
+  </div>
+  <div class="field full">
+    <label>Straße + Hausnummer</label>
+    <input type="text" id="kdStr">
+  </div>
+  <div class="field">
+    <label>PLZ + Ort</label>
+    <input type="text" id="kdPlz">
+  </div>
+  <div class="field">
+    <label>E-Mail</label>
+    <input type="email" id="kdEmail" inputmode="email">
+  </div>
+  <div class="field full">
+    <label>IBAN</label>
+    <input type="text" id="kdIban" placeholder="DE...">
+  </div>
+  <div class="field full">
+    <label>Personalausweis-Nr.</label>
+    <input type="text" id="kdPerso">
+  </div>
+</div>
+
+<div class="section-title">③   N O C H   B E N Ö T I G T E   U N T E R L A G E N</div>
+<div class="checklist">
+  <div class="check-item">
+    <input type="checkbox" id="chkPerso">
+    <label for="chkPerso">
+      Personalausweis-Kopie (Vorder- und Rückseite)
+      <span class="hint">Foto per WhatsApp an Udo: 0176 70157747</span>
+    </label>
+  </div>
+  <div class="check-item">
+    <input type="checkbox" id="chkIban">
+    <label for="chkIban">
+      IBAN-Bestätigung (Kontoauszug oder EC-Karte)
+      <span class="hint">Foto per WhatsApp an Udo: 0176 70157747</span>
+    </label>
+  </div>
+</div>
+
+<div class="section-title">④   T E R M I N - W U N S C H   F Ü R   A N R U F</div>
+<div class="info-box">
+  Wann passt der <strong>Abschluss-Anruf</strong> am besten? Dauert nur 5 Minuten. Werktags (Mo–Fr).
+</div>
+<div class="termin-grid">
+  <div class="termin-row">
+    <div class="day-label">Tag</div>
+    <div class="termin-slots" id="dayButtons">
+      <button data-day="Mo">Mo</button>
+      <button data-day="Di">Di</button>
+      <button data-day="Mi">Mi</button>
+      <button data-day="Do">Do</button>
+      <button data-day="Fr">Fr</button>
+    </div>
+  </div>
+  <div class="termin-row">
+    <div class="day-label">Tageszeit</div>
+    <div class="termin-slots" id="slotButtons">
+      <button data-slot="9–12 Uhr">9–12 Uhr</button>
+      <button data-slot="12–17 Uhr">12–17 Uhr</button>
+      <button data-slot="17–19 Uhr">17–19 Uhr</button>
+    </div>
+  </div>
+</div>
+<div class="uhrzeit-input">
+  <label for="uhrzeit">Konkrete Uhrzeit<br><span style="font-weight:400;font-size:11px;color:var(--muted)">5-Min-Schritte (z.B. 14:35)</span></label>
+  <input type="text" id="uhrzeit" placeholder="HH:MM" inputmode="numeric" maxlength="5">
+</div>
+
+<div class="section-title">⑤   B E R A T E R</div>
+<div class="form-section">
+  <div class="field full">
+    <label>Berater-Name</label>
+    <input type="text" id="berater" placeholder="Name des Beraters / Maklers">
+  </div>
+</div>
+
+<div class="section-title">⑥   D A T E N   S E N D E N</div>
+
+<a href="#" id="sendBtn" class="send-button" target="_blank" rel="noopener">📱  Daten an Udo senden (0176 70157747)</a>
+
+<div class="footer">
+  Wüstenrot Bausparkasse AG  —  Vertragsabschluss-Vorlage
+  <br>
+  Alle Daten gehen direkt an Udo Bernhardt: <strong>0176 70157747</strong>
+  <br>
+  <button class="reset-button" id="resetBtn">Alle Felder leeren</button>
+</div>
+
+</div>
+
+<script>
+const UDO_NUMMER = '4917670157747';
+
+// === Geburtsdatum + Beginn: Auto-Punkt ===
+function setupAutoPunkt(inputId) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  inp.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    v = v.substring(0, 8);
+    let formatted = v;
+    if (v.length >= 5) {
+      formatted = v.substring(0,2) + '.' + v.substring(2,4) + '.' + v.substring(4);
+    } else if (v.length >= 3) {
+      formatted = v.substring(0,2) + '.' + v.substring(2);
+    }
+    e.target.value = formatted;
+  });
+}
+
+// === Uhrzeit: Auto-Doppelpunkt ===
+function setupUhrzeit() {
+  const inp = document.getElementById('uhrzeit');
+  if (!inp) return;
+  inp.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    v = v.substring(0, 4);
+    let formatted = v;
+    if (v.length >= 3) {
+      formatted = v.substring(0,2) + ':' + v.substring(2);
+    }
+    e.target.value = formatted;
+  });
+}
+
+// === Variante umschalten ===
+function setupVarianten() {
+  document.querySelectorAll('.variant-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.variant-toggle button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const variant = btn.dataset.wunsch;
+      // Felder zeigen/verstecken
+      document.getElementById('fieldSparrate').style.display = (variant === 'Sparen') ? '' : 'none';
+      document.getElementById('fieldEinmal').style.display = (variant === 'Einmalanlage') ? '' : 'none';
+      updatePromille();
+      updateSendBtn();
+      saveState();
+    });
+  });
+}
+
+function getVariante() {
+  const sel = document.querySelector('.variant-toggle button.selected');
+  return sel ? sel.dataset.wunsch : '';
+}
+
+// === Promille automatisch berechnen ===
+function updatePromille() {
+  const bss = parseFloat(document.getElementById('bss').value) || 0;
+  const variante = getVariante();
+  if (variante === 'Sparen') {
+    const rate = parseFloat(document.getElementById('sparrate').value) || 0;
+    if (bss > 0 && rate > 0) {
+      const p = (rate / bss) * 1000;
+      document.getElementById('promille').value = p.toFixed(1).replace('.', ',') + ' ‰';
+    } else {
+      document.getElementById('promille').value = '';
+    }
+  } else if (variante === 'Einmalanlage') {
+    const einmal = parseFloat(document.getElementById('einmalanlage').value) || 0;
+    if (bss > 0 && einmal > 0) {
+      const p = (einmal / bss) * 100;
+      document.getElementById('promille').value = p.toFixed(1).replace('.', ',') + ' %';
+    } else {
+      document.getElementById('promille').value = '';
+    }
+  }
+}
+
+// === Termin-Tag und Slot ===
+function setupTermin() {
+  document.querySelectorAll('#dayButtons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#dayButtons button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateSendBtn();
+      saveState();
+    });
+  });
+  document.querySelectorAll('#slotButtons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#slotButtons button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateSendBtn();
+      saveState();
+    });
+  });
+}
+
+function getSelectedDay() {
+  const sel = document.querySelector('#dayButtons button.selected');
+  return sel ? sel.dataset.day : '';
+}
+function getSelectedSlot() {
+  const sel = document.querySelector('#slotButtons button.selected');
+  return sel ? sel.dataset.slot : '';
+}
+
+// === Send-Button URL bauen ===
+function updateSendBtn() {
+  const variante = getVariante();
+  const bss = document.getElementById('bss').value;
+  const sparrate = document.getElementById('sparrate').value;
+  const einmal = document.getElementById('einmalanlage').value;
+  const promille = document.getElementById('promille').value;
+  const beginn = document.getElementById('beginn').value;
+  
+  const name = document.getElementById('kdName').value;
+  const geb = document.getElementById('kdGeb').value;
+  const tel = document.getElementById('kdTel').value;
+  const str = document.getElementById('kdStr').value;
+  const plz = document.getElementById('kdPlz').value;
+  const email = document.getElementById('kdEmail').value;
+  const iban = document.getElementById('kdIban').value;
+  const perso = document.getElementById('kdPerso').value;
+  
+  const persoVorhanden = document.getElementById('chkPerso').checked ? 'JA' : 'OFFEN';
+  const ibanVorhanden = document.getElementById('chkIban').checked ? 'JA' : 'OFFEN';
+  
+  const tag = getSelectedDay();
+  const slot = getSelectedSlot();
+  const uhrzeit = document.getElementById('uhrzeit').value;
+  
+  const berater = document.getElementById('berater').value;
+  
+  const lines = [
+    'BAUSPARVERTRAG-ABSCHLUSS',
+    '',
+    '— Vertrag —',
+    `Variante: ${variante}`,
+    `Bausparsumme: ${bss} EUR`,
+  ];
+  if (variante === 'Sparen' && sparrate) lines.push(`Sparrate: ${sparrate} EUR/Monat`);
+  if (variante === 'Einmalanlage' && einmal) lines.push(`Einmalanlage: ${einmal} EUR`);
+  if (promille) lines.push(`Faktor: ${promille}`);
+  if (beginn) lines.push(`Beginn: ${beginn}`);
+  
+  lines.push('');
+  lines.push('— Kunde —');
+  if (name) lines.push(`Name: ${name}`);
+  if (geb) lines.push(`Geb.: ${geb}`);
+  if (tel) lines.push(`Tel: ${tel}`);
+  if (str || plz) lines.push(`Adresse: ${str}, ${plz}`);
+  if (email) lines.push(`E-Mail: ${email}`);
+  if (iban) lines.push(`IBAN: ${iban}`);
+  if (perso) lines.push(`Perso-Nr.: ${perso}`);
+  
+  lines.push('');
+  lines.push('— Unterlagen —');
+  lines.push(`Perso-Kopie: ${persoVorhanden}`);
+  lines.push(`IBAN-Nachweis: ${ibanVorhanden}`);
+  
+  lines.push('');
+  lines.push('— Termin Abschluss-Anruf —');
+  if (tag) lines.push(`Tag: ${tag}`);
+  if (slot) lines.push(`Tageszeit: ${slot}`);
+  if (uhrzeit) lines.push(`Uhrzeit: ${uhrzeit}`);
+  
+  if (berater) {
+    lines.push('');
+    lines.push(`Berater: ${berater}`);
+  }
+  
+  const text = lines.join('\n');
+  const url = 'https://wa.me/' + UDO_NUMMER + '?text=' + encodeURIComponent(text);
+  document.getElementById('sendBtn').href = url;
+}
+
+// === localStorage ===
+function saveState() {
+  try {
+    const state = {
+      variante: getVariante(),
+      bss: document.getElementById('bss').value,
+      sparrate: document.getElementById('sparrate').value,
+      einmal: document.getElementById('einmalanlage').value,
+      beginn: document.getElementById('beginn').value,
+      kunde: {
+        name: document.getElementById('kdName').value,
+        geb: document.getElementById('kdGeb').value,
+        tel: document.getElementById('kdTel').value,
+        str: document.getElementById('kdStr').value,
+        plz: document.getElementById('kdPlz').value,
+        email: document.getElementById('kdEmail').value,
+        iban: document.getElementById('kdIban').value,
+        perso: document.getElementById('kdPerso').value
+      },
+      chkPerso: document.getElementById('chkPerso').checked,
+      chkIban: document.getElementById('chkIban').checked,
+      tag: getSelectedDay(),
+      slot: getSelectedSlot(),
+      uhrzeit: document.getElementById('uhrzeit').value,
+      berater: document.getElementById('berater').value
+    };
+    localStorage.setItem('vertragabschluss', JSON.stringify(state));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('vertragabschluss');
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.bss) document.getElementById('bss').value = s.bss;
+    if (s.sparrate) document.getElementById('sparrate').value = s.sparrate;
+    if (s.einmal) document.getElementById('einmalanlage').value = s.einmal;
+    if (s.beginn) document.getElementById('beginn').value = s.beginn;
+    if (s.variante) {
+      const btn = document.querySelector(`.variant-toggle button[data-wunsch="${s.variante}"]`);
+      if (btn) {
+        btn.classList.add('selected');
+        document.getElementById('fieldSparrate').style.display = (s.variante === 'Sparen') ? '' : 'none';
+        document.getElementById('fieldEinmal').style.display = (s.variante === 'Einmalanlage') ? '' : 'none';
+      }
+    }
+    if (s.kunde) {
+      const k = s.kunde;
+      if (k.name) document.getElementById('kdName').value = k.name;
+      if (k.geb) document.getElementById('kdGeb').value = k.geb;
+      if (k.tel) document.getElementById('kdTel').value = k.tel;
+      if (k.str) document.getElementById('kdStr').value = k.str;
+      if (k.plz) document.getElementById('kdPlz').value = k.plz;
+      if (k.email) document.getElementById('kdEmail').value = k.email;
+      if (k.iban) document.getElementById('kdIban').value = k.iban;
+      if (k.perso) document.getElementById('kdPerso').value = k.perso;
+    }
+    if (s.chkPerso) document.getElementById('chkPerso').checked = true;
+    if (s.chkIban) document.getElementById('chkIban').checked = true;
+    if (s.tag) {
+      const btn = document.querySelector(`#dayButtons button[data-day="${s.tag}"]`);
+      if (btn) btn.classList.add('selected');
+    }
+    if (s.slot) {
+      const btn = document.querySelector(`#slotButtons button[data-slot="${s.slot}"]`);
+      if (btn) btn.classList.add('selected');
+    }
+    if (s.uhrzeit) document.getElementById('uhrzeit').value = s.uhrzeit;
+    if (s.berater) document.getElementById('berater').value = s.berater;
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupAutoPunkt('kdGeb');
+  setupAutoPunkt('beginn');
+  setupUhrzeit();
+  setupVarianten();
+  setupTermin();
+  loadState();
+  updatePromille();
+  updateSendBtn();
+  
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      updatePromille();
+      updateSendBtn();
+      saveState();
+    });
+    inp.addEventListener('change', () => {
+      updatePromille();
+      updateSendBtn();
+      saveState();
+    });
+  });
+  
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Wirklich alle Eingaben löschen?')) return;
+    try { localStorage.removeItem('vertragabschluss'); } catch(e) {}
+    document.querySelectorAll('input[type=text], input[type=number], input[type=tel], input[type=email]').forEach(inp => {
+      inp.value = '';
+    });
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.variant-toggle button, #dayButtons button, #slotButtons button').forEach(b => b.classList.remove('selected'));
+    document.getElementById('fieldSparrate').style.display = '';
+    document.getElementById('fieldEinmal').style.display = 'none';
+    updatePromille();
+    updateSendBtn();
+  });
+});
+</script>
+</body>
+</html>
